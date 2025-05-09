@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Biológico: Reinos, Taxonomia e Cladograma</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #81c784;
+            --accent: #ff8f00;
+            --light: #f1f8e9;
+            --dark: #1b5e20;
+            --text: #333;
+            --white: #fff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%232e7d32" fill-opacity="0.1" d="M30,10 Q50,0 70,10 Q90,20 90,40 Q100,50 90,60 Q90,80 70,90 Q50,100 30,90 Q10,80 10,60 Q0,50 10,40 Q10,20 30,10 Z"/></svg>');
+            background-size: 200px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="3" fill="white" fill-opacity="0.1"/><circle cx="50" cy="30" r="4" fill="white" fill-opacity="0.1"/><circle cx="80" cy="20" r="3" fill="white" fill-opacity="0.1"/><circle cx="30" cy="70" r="5" fill="white" fill-opacity="0.1"/><circle cx="70" cy="80" r="3" fill="white" fill-opacity="0.1"/></svg>');
+            opacity: 0.3;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%2381c784" fill-opacity="0.3" d="M50,0 C60,20 80,30 100,50 C80,70 60,80 50,100 C40,80 20,70 0,50 C20,30 40,20 50,0 Z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+        }
+        
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .option {
+            background-color: var(--light);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option:hover {
+            background-color: var(--secondary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .option.correct {
+            background-color: #4caf50;
+            color: white;
+            border-color: #2e7d32;
+        }
+        
+        .option.incorrect {
+            background-color: #f44336;
+            color: white;
+            border-color: #c62828;
+        }
+        
+        .option.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background-color: var(--dark);
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .hint-btn {
+            background-color: var(--accent);
+        }
+        
+        .eliminate-btn {
+            background-color: #5c6bc0;
+        }
+        
+        .next-btn {
+            background-color: var(--dark);
+            margin-left: auto;
+        }
+        
+        .hint {
+            background-color: #fff3e0;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 0 5px 5px 0;
+            display: none;
+        }
+        
+        .hint.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .score-container {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .final-screen {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+        
+        .final-screen h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin: 20px 0;
+        }
+        
+        .restart-btn {
+            background-color: var(--primary);
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            margin-top: 20px;
+        }
+        
+        .cell-decoration {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            opacity: 0.1;
+        }
+        
+        .cell-1 {
+            top: 20px;
+            left: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="%232e7d32"/></svg>');
+        }
+        
+        .cell-2 {
+            bottom: 30px;
+            right: 30px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%232e7d32" d="M50,5 L95,50 L50,95 L5,50 Z"/></svg>');
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .leaf-decoration {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .leaf-1 {
+            top: 50px;
+            right: 50px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%232e7d32" d="M50,10 C70,5 90,20 90,40 C95,60 80,80 60,85 C40,95 20,80 15,60 C5,40 20,20 40,15 Z"/></svg>');
+        }
+        
+        .leaf-2 {
+            bottom: 30px;
+            left: 30px;
+            transform: rotate(120deg);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%232e7d32" d="M50,10 C70,5 90,20 90,40 C95,60 80,80 60,85 C40,95 20,80 15,60 C5,40 20,20 40,15 Z"/></svg>');
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .stat-box {
+            background-color: var(--light);
+            padding: 10px 15px;
+            border-radius: 5px;
+            min-width: 120px;
+            text-align: center;
+            border: 1px solid var(--secondary);
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Quiz Biológico</h1>
+            <p class="subtitle">Reinos, Taxonomia e Cladograma</p>
+            <div class="cell-decoration cell-1"></div>
+            <div class="cell-decoration cell-2"></div>
+        </header>
+        
+        <div class="quiz-screen">
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div>Pergunta</div>
+                    <div class="stat-value" id="current-question">0/50</div>
+                </div>
+                <div class="stat-box">
+                    <div>Pontuação</div>
+                    <div class="stat-value" id="score">0</div>
+                </div>
+                <div class="stat-box">
+                    <div>Dicas</div>
+                    <div class="stat-value" id="hints-left">3</div>
+                </div>
+                <div class="stat-box">
+                    <div>Eliminar</div>
+                    <div class="stat-value" id="eliminations-left">1</div>
+                </div>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+                <div class="hint" id="hint"></div>
+                <div class="controls">
+                    <button class="hint-btn" id="hint-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                        </svg>
+                        Dica
+                    </button>
+                    <button class="eliminate-btn" id="eliminate-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                        Eliminar 2 opções
+                    </button>
+                    <button class="next-btn" id="next-btn" disabled>
+                        Próxima
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="final-screen">
+            <h2>Quiz Concluído!</h2>
+            <div class="final-score" id="final-score">0/50</div>
+            <p id="final-message">Parabéns pelo seu desempenho!</p>
+            <button class="restart-btn" id="restart-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                </svg>
+                Jogar Novamente
+            </button>
+            <div class="leaf-decoration leaf-1"></div>
+            <div class="leaf-decoration leaf-2"></div>
+        </div>
+    </div>
+
+    <script>
+        // Banco de perguntas
+        const questions = [
+            {
+                question: "Quantos reinos biológicos existem no sistema de classificação mais atual?",
+                options: ["3 reinos", "4 reinos", "5 reinos", "6 reinos"],
+                answer: 2,
+                hint: "O sistema mais atual inclui reinos para animais, plantas, fungos e mais dois outros grupos."
+            },
+            {
+                question: "Qual desses não é um dos reinos biológicos tradicionais?",
+                options: ["Monera", "Protista", "Animalia", "Bacteria"],
+                answer: 3,
+                hint: "Bacteria agora está incluída em um domínio separado, não mais como reino."
+            },
+            {
+                question: "Qual é a ordem correta dos níveis taxonômicos?",
+                options: ["Família, Ordem, Classe, Filo", "Ordem, Família, Classe, Filo", "Família, Ordem, Filo, Classe", "Ordem, Classe, Família, Filo"],
+                answer: 0,
+                hint: "Lembre-se do mnemônico: 'Rei Filipe Comeu Ovo Frito' - Reino, Filo, Classe, Ordem, Família..."
+            },
+            {
+                question: "Qual desses é o nível taxonômico mais abrangente?",
+                options: ["Família", "Ordem", "Classe", "Filo"],
+                answer: 3,
+                hint: "Quanto mais alto o nível taxonômico, mais abrangente ele é."
+            },
+            {
+                question: "O que um cladograma representa?",
+                options: ["Relações alimentares", "Relações evolutivas", "Distribuição geográfica", "Níveis tróficos"],
+                answer: 1,
+                hint: "Cladogramas mostram ancestrais comuns e ramificações evolutivas."
+            },
+            {
+                question: "Qual desses é um exemplo de organismo do reino Fungi?",
+                options: ["Alga", "Cogumelo", "Bactéria", "Ameba"],
+                answer: 1,
+                hint: "Eles são importantes decompositores na natureza."
+            },
+            {
+                question: "Qual desses grupos pertence ao reino Protista?",
+                options: ["Leveduras", "Musgos", "Paramécios", "Bactérias"],
+                answer: 2,
+                hint: "Protistas são geralmente organismos eucarióticos unicelulares."
+            },
+            {
+                question: "Qual é a principal característica que diferencia os reinos Plantae e Animalia?",
+                options: ["Presença de núcleo", "Tipo de reprodução", "Nutrição", "Presença de células"],
+                answer: 2,
+                hint: "Um grupo produz seu próprio alimento, o outro não."
+            },
+            {
+                question: "O que representa um nó em um cladograma?",
+                options: ["Espécie atual", "Ancestral comum", "Característica derivada", "Extinção"],
+                answer: 1,
+                hint: "Os nós mostram pontos de divergência evolutiva."
+            },
+            {
+                question: "Qual desses é um exemplo de característica derivada compartilhada?",
+                options: ["Presença de DNA", "Presença de penas", "Presença de membrana celular", "Presença de ribossomos"],
+                answer: 1,
+                hint: "Características derivadas são aquelas que surgiram em um grupo específico."
+            },
+            {
+                question: "Qual sistema de classificação utiliza cladogramas?",
+                options: ["Taxonomia linneana", "Cladística", "Filogenia molecular", "Sistemática evolutiva"],
+                answer: 1,
+                hint: "Este sistema agrupa organismos baseado em ancestrais comuns."
+            },
+            {
+                question: "Qual desses reinos contém organismos procariontes?",
+                options: ["Monera", "Protista", "Fungi", "Plantae"],
+                answer: 0,
+                hint: "Procariontes são organismos sem núcleo celular definido."
+            },
+            {
+                question: "Qual nível taxonômico está imediatamente acima de gênero?",
+                options: ["Espécie", "Família", "Ordem", "Classe"],
+                answer: 1,
+                hint: "A sequência é: Espécie → Gênero → Família → Ordem → Classe..."
+            },
+            {
+                question: "Qual desses pares está mais estreitamente relacionado evolutivamente?",
+                options: ["Cachorro e gato", "Cachorro e tubarão", "Cachorro e bactéria", "Cachorro e cogumelo"],
+                answer: 0,
+                hint: "Pense em quais organismos compartilham um ancestral comum mais recente."
+            },
+            {
+                question: "Qual desses é um exemplo de grupo monofilético?",
+                options: ["Répteis (tradicionais)", "Peixes", "Aves", "Todos os mamíferos"],
+                answer: 3,
+                hint: "Um grupo monofilético inclui todos os descendentes de um ancestral comum."
+            },
+            {
+                question: "Qual desses cientistas é considerado o pai da taxonomia moderna?",
+                options: ["Charles Darwin", "Gregor Mendel", "Carl Linnaeus", "Louis Pasteur"],
+                answer: 2,
+                hint: "Ele desenvolveu o sistema binomial de nomenclatura."
+            },
+            {
+                question: "Qual é a forma correta de escrever o nome científico do ser humano?",
+                options: ["homo sapiens", "Homo Sapiens", "Homo sapiens", "Homo Sapiens"],
+                answer: 2,
+                hint: "O gênero começa com maiúscula, a espécie com minúscula, e ambos em itálico."
+            },
+            {
+                question: "Qual desses conceitos é fundamental para a construção de cladogramas?",
+                options: ["Seleção natural", "Deriva genética", "Características compartilhadas", "Isolamento geográfico"],
+                answer: 2,
+                hint: "Cladogramas são baseados em características derivadas compartilhadas."
+            },
+            {
+                question: "Qual desses reinos foi o primeiro a surgir na Terra?",
+                options: ["Animalia", "Plantae", "Monera", "Fungi"],
+                answer: 2,
+                hint: "Pense nos organismos mais simples e antigos."
+            },
+            {
+                question: "Qual desses não é um domínio na classificação biológica atual?",
+                options: ["Archaea", "Bacteria", "Eukarya", "Protista"],
+                answer: 3,
+                hint: "Domínios são níveis taxonômicos acima de reinos."
+            },
+            {
+                question: "Qual é a principal diferença entre Archaea e Bacteria?",
+                options: ["Presença de núcleo", "Composição da parede celular", "Tipo de reprodução", "Presença de organelas"],
+                answer: 1,
+                hint: "As paredes celulares desses dois domínios têm composições químicas diferentes."
+            },
+            {
+                question: "Qual desses organismos pertence ao reino Plantae?",
+                options: ["Alga marinha", "Musgo", "Líquen", "Fermento"],
+                answer: 1,
+                hint: "Plantas são multicelulares, eucarióticas e fotossintetizantes."
+            },
+            {
+                question: "O que significa o termo 'parafilético' em cladística?",
+                options: ["Grupo que inclui um ancestral e todos seus descendentes", "Grupo que inclui um ancestral mas não todos descendentes", "Grupo sem ancestral comum", "Grupo com características convergentes"],
+                answer: 1,
+                hint: "Um exemplo é a classificação tradicional de répteis, que exclui as aves."
+            },
+            {
+                question: "Qual desses pares compartilha um ancestral comum mais recente?",
+                options: ["Humano e cogumelo", "Humano e carvalho", "Humano e estrela-do-mar", "Humano e chimpanzé"],
+                answer: 3,
+                hint: "Pense em quais organismos são mais próximos na árvore da vida."
+            },
+            {
+                question: "Qual é a principal característica do reino Animalia?",
+                options: ["Autotrofia", "Parede celular de celulose", "Nutrição heterotrófica", "Reprodução assexuada"],
+                answer: 2,
+                hint: "Animais não produzem seu próprio alimento."
+            },
+            {
+                question: "Qual desses conceitos é usado para determinar relações em cladogramas?",
+                options: ["Analogia", "Homologia", "Convergência evolutiva", "Todos os anteriores"],
+                answer: 1,
+                hint: "Estruturas homólogas indicam ancestralidade comum."
+            },
+            {
+                question: "Qual desses organismos pertence ao domínio Archaea?",
+                options: ["Escherichia coli", "Methanobrevibacter smithii", "Saccharomyces cerevisiae", "Amanita muscaria"],
+                answer: 1,
+                hint: "Archaea frequentemente vivem em ambientes extremos."
+            },
+            {
+                question: "Qual nível taxonômico está imediatamente abaixo de família?",
+                options: ["Ordem", "Classe", "Gênero", "Espécie"],
+                answer: 2,
+                hint: "A sequência é: Família → Gênero → Espécie."
+            },
+            {
+                question: "Qual desses é um exemplo de grupo polifilético?",
+                options: ["Mamíferos", "Aves", "Peixes de nadadeiras raiadas", "Animais de sangue quente"],
+                answer: 3,
+                hint: "Grupos polifiléticos unem organismos com características convergentes, não por ancestralidade comum."
+            },
+            {
+                question: "Qual desses reinos contém organismos com parede celular de quitina?",
+                options: ["Plantae", "Fungi", "Protista", "Monera"],
+                answer: 1,
+                hint: "A quitina também é encontrada no exoesqueleto de artrópodes."
+            },
+            {
+                question: "O que representa um ramo mais longo em um cladograma?",
+                options: ["Maior número de espécies", "Maior tempo evolutivo", "Maior complexidade", "Maior sucesso evolutivo"],
+                answer: 1,
+                hint: "O comprimento dos ramos pode representar tempo ou quantidade de mudanças."
+            },
+            {
+                question: "Qual desses pares está mais distante evolutivamente?",
+                options: ["Homem e rato", "Homem e tubarão", "Homem e estrela-do-mar", "Homem e samambaia"],
+                answer: 3,
+                hint: "Pense em quando esses grupos divergiram na árvore da vida."
+            },
+            {
+                question: "Qual é a principal característica dos organismos do reino Protista?",
+                options: ["São todos unicelulares", "São todos autotróficos", "São eucariontes não classificados em outros reinos", "São todos parasitas"],
+                answer: 2,
+                hint: "Protista é um grupo diverso e muitas vezes considerado 'caixa de areia' taxonômica."
+            },
+            {
+                question: "Qual desses conceitos é essencial para a taxonomia filogenética?",
+                options: ["Semelhança morfológica", "Ancestralidade comum", "Adaptação ao ambiente", "Tamanho populacional"],
+                answer: 1,
+                hint: "A taxonomia moderna busca refletir as relações evolutivas."
+            },
+            {
+                question: "Qual desses organismos pertence ao domínio Eukarya?",
+                options: ["Halobacterium", "Thermoplasma", "Trypanosoma", "Thermus aquaticus"],
+                answer: 2,
+                hint: "Eukarya inclui todos os organismos com células eucarióticas."
+            },
+            {
+                question: "Qual é a principal diferença entre sistemática e taxonomia?",
+                options: ["Sistemática estuda relações evolutivas, taxonomia classifica", "Taxonomia estuda relações evolutivas, sistemática classifica", "Não há diferença", "Sistemática é mais antiga que taxonomia"],
+                answer: 0,
+                hint: "Taxonomia é parte da sistemática."
+            },
+            {
+                question: "Qual desses critérios não é usado para definir espécies?",
+                options: ["Isolamento reprodutivo", "Semelhança morfológica", "Compatibilidade genética", "Habitat compartilhado"],
+                answer: 3,
+                answer: 3,
+                hint: "Organismos podem viver no mesmo habitat sem serem da mesma espécie."
+            },
+            {
+                question: "Qual desses é um exemplo de nomenclatura binomial correta?",
+                options: ["Canis Lupus", "canis lupus", "Canis lupus", "Canis Lupus"],
+                answer: 2,
+                hint: "Gênero com inicial maiúscula, espécie com minúscula, ambos em itálico."
+            },
+            {
+                question: "Qual desses conceitos se refere a características semelhantes não por ancestralidade comum?",
+                options: ["Homologia", "Analogia", "Sinapomorfia", "Plesiomorfia"],
+                answer: 1,
+                hint: "Exemplo: asas de morcegos e asas de insetos."
+            },
+            {
+                question: "Qual desses reinos contém organismos que podem ser autotróficos ou heterotróficos?",
+                options: ["Plantae", "Animalia", "Protista", "Fungi"],
+                answer: 2,
+                hint: "Protista é um grupo muito diverso em termos de nutrição."
+            },
+            {
+                question: "Qual é a principal característica dos organismos do domínio Bacteria?",
+                options: ["Presença de núcleo", "Parede celular com peptidoglicano", "Reprodução sexuada", "Organelas membranosas"],
+                answer: 1,
+                hint: "A composição da parede celular é uma característica distintiva."
+            },
+            {
+                question: "Qual desses é um exemplo de característica ancestral compartilhada?",
+                options: ["Penas em aves", "Membros pentadáctilos em vertebrados", "Flores em angiospermas", "Glândulas mamárias em mamíferos"],
+                answer: 1,
+                hint: "Características ancestrais são compartilhadas por um grupo amplo."
+            },
+            {
+                question: "Qual desses níveis taxonômicos é o mais específico?",
+                options: ["Filo", "Ordem", "Família", "Espécie"],
+                answer: 3,
+                hint: "Quanto mais baixo o nível taxonômico, mais específico ele é."
+            },
+            {
+                question: "Qual desses organismos pertence ao reino Monera no sistema tradicional?",
+                options: ["Ameba", "Levedura", "Escherichia coli", "Alga verde"],
+                answer: 2,
+                hint: "Monera inclui organismos procariontes."
+            },
+            {
+                question: "O que significa o termo 'clado'?",
+                options: ["Grupo taxonômico artificial", "Grupo de organismos com um ancestral comum", "Grupo baseado em características ecológicas", "Grupo de organismos com mesma morfologia"],
+                answer: 1,
+                hint: "Clados são a base da classificação cladística."
+            },
+            {
+                question: "Qual desses pares de organismos pertencem ao mesmo reino?",
+                options: ["Musgo e cogumelo", "Alga e samambaia", "Bactéria e arquea", "Ameba e paramécio"],
+                answer: 3,
+                hint: "Ambos são protistas unicelulares."
+            },
+            {
+                question: "Qual é a principal diferença entre os sistemas de classificação fenética e cladística?",
+                options: ["Fenética usa apenas características morfológicas", "Cladística ignora relações evolutivas", "Fenética considera apenas DNA", "Cladística agrupa por habitat"],
+                answer: 0,
+                hint: "A fenética agrupa por similaridade geral, sem considerar evolução."
+            },
+            {
+                question: "Qual desses conceitos se refere a uma característica derivada compartilhada?",
+                options: ["Plesiomorfia", "Apomorfia", "Analogia", "Homoplasia"],
+                answer: 1,
+                hint: "Sinapomorfia é um tipo específico de apomorfia compartilhada."
+            },
+            {
+                question: "Qual desses organismos seria incluído no mesmo clado que os humanos em um cladograma?",
+                options: ["Carvalho", "Cogumelo", "Golfinho", "Bactéria"],
+                answer: 2,
+                hint: "Pense em quais organismos são mamíferos como os humanos."
+            }
+        ];
+
+        // Variáveis do jogo
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let hintsUsed = 0;
+        const maxHints = 3;
+        let eliminationsUsed = 0;
+        const maxEliminations = 1;
+        let quizCompleted = false;
+        
+        // Elementos do DOM
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const hintElement = document.getElementById('hint');
+        const hintButton = document.getElementById('hint-btn');
+        const eliminateButton = document.getElementById('eliminate-btn');
+        const nextButton = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentQuestionDisplay = document.getElementById('current-question');
+        const scoreDisplay = document.getElementById('score');
+        const hintsLeftDisplay = document.getElementById('hints-left');
+        const eliminationsLeftDisplay = document.getElementById('eliminations-left');
+        const quizScreen = document.querySelector('.quiz-screen');
+        const finalScreen = document.querySelector('.final-screen');
+        const finalScoreElement = document.getElementById('final-score');
+        const finalMessageElement = document.getElementById('final-message');
+        const restartButton = document.getElementById('restart-btn');
+        
+        // Inicializar o quiz
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            hintsUsed = 0;
+            eliminationsUsed = 0;
+            quizCompleted = false;
+            
+            updateStats();
+            showQuestion();
+            
+            quizScreen.style.display = 'block';
+            finalScreen.style.display = 'none';
+        }
+        
+        // Mostrar pergunta atual
+        function showQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                endQuiz();
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            questionElement.textContent = question.question;
+            
+            // Limpar opções anteriores
+            optionsElement.innerHTML = '';
+            
+            // Criar novas opções
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                optionElement.addEventListener('click', selectOption);
+                
+                optionsElement.appendChild(optionElement);
+            });
+            
+            // Resetar controles
+            hintElement.classList.remove('show');
+            hintElement.textContent = question.hint;
+            nextButton.disabled = true;
+            
+            // Atualizar barra de progresso
+            progressBar.style.width = `${(currentQuestionIndex / questions.length) * 100}%`;
+        }
+        
+        // Selecionar uma opção
+        function selectOption(e) {
+            if (quizCompleted) return;
+            
+            const selectedOption = e.target;
+            const selectedIndex = parseInt(selectedOption.dataset.index);
+            const question = questions[currentQuestionIndex];
+            
+            // Desabilitar todas as opções
+            document.querySelectorAll('.option').forEach(option => {
+                option.removeEventListener('click', selectOption);
+            });
+            
+            // Marcar resposta correta/incorreta
+            if (selectedIndex === question.answer) {
+                selectedOption.classList.add('correct');
+                score++;
+            } else {
+                selectedOption.classList.add('incorrect');
+                // Mostrar a resposta correta
+                document.querySelector(`.option[data-index="${question.answer}"]`).classList.add('correct');
+            }
+            
+            // Atualizar pontuação
+            updateStats();
+            
+            // Permitir ir para próxima pergunta
+            nextButton.disabled = false;
+        }
+        
+        // Mostrar dica
+        function showHint() {
+            if (hintsUsed >= maxHints) return;
+            
+            hintElement.classList.add('show');
+            hintsUsed++;
+            updateStats();
+            
+            // Desabilitar botão de dica se não houver mais dicas
+            if (hintsUsed >= maxHints) {
+                hintButton.disabled = true;
+            }
+        }
+        
+        // Eliminar duas opções incorretas
+        function eliminateOptions() {
+            if (eliminationsUsed >= maxEliminations) return;
+            
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            let eliminated = 0;
+            
+            // Eliminar duas opções incorretas (não a resposta correta)
+            for (let i = 0; i < options.length && eliminated < 2; i++) {
+                const optionIndex = parseInt(options[i].dataset.index);
+                
+                if (optionIndex !== question.answer && !options[i].classList.contains('disabled')) {
+                    options[i].classList.add('disabled');
+                    options[i].removeEventListener('click', selectOption);
+                    eliminated++;
+                }
+            }
+            
+            eliminationsUsed++;
+            updateStats();
+            
+            // Desabilitar botão de eliminação se não houver mais eliminações
+            if (eliminationsUsed >= maxEliminations) {
+                eliminateButton.disabled = true;
+            }
+        }
+        
+        // Ir para próxima pergunta
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+        
+        // Finalizar o quiz
+        function endQuiz() {
+            quizCompleted = true;
+            quizScreen.style.display = 'none';
+            finalScreen.style.display = 'block';
+            
+            finalScoreElement.textContent = `${score}/${questions.length}`;
+            
+            // Mensagem personalizada baseada na pontuação
+            let message;
+            const percentage = (score / questions.length) * 100;
+            
+            if (percentage >= 90) {
+                message = "Excelente! Você é um verdadeiro especialista em biologia!";
+            } else if (percentage >= 70) {
+                message = "Muito bom! Seu conhecimento em taxonomia e cladística é sólido!";
+            } else if (percentage >= 50) {
+                message = "Bom trabalho! Com um pouco mais de estudo você vai dominar o assunto!";
+            } else {
+                message = "Continue estudando! A biologia é fascinante e vale a pena o esforço!";
+            }
+            
+            finalMessageElement.textContent = message;
+        }
+        
+        // Atualizar estatísticas na tela
+        function updateStats() {
+            currentQuestionDisplay.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+            scoreDisplay.textContent = score;
+            hintsLeftDisplay.textContent = maxHints - hintsUsed;
+            eliminationsLeftDisplay.textContent = maxEliminations - eliminationsUsed;
+        }
+        
+        // Event listeners
+        hintButton.addEventListener('click', showHint);
+        eliminateButton.addEventListener('click', eliminateOptions);
+        nextButton.addEventListener('click', nextQuestion);
+        restartButton.addEventListener('click', initQuiz);
+        
+        // Iniciar o quiz quando a página carregar
+        window.addEventListener('load', initQuiz);
+    </script>
+</body>
+</html>
