@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioGames - Aprenda Biologia Divertindo-se</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #81c784;
+            --accent-color: #ffeb3b;
+            --dark-color: #1b5e20;
+            --light-color: #f1f8e9;
+            --text-color: #263238;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-image: url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .games-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+            animation: slideUp 1s ease-in-out;
+        }
+        
+        .game-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .game-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        
+        .game-description {
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background-color: var(--dark-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .quiz-btn {
+            background-color: var(--primary-color);
+        }
+        
+        .cards-btn {
+            background-color: var(--secondary-color);
+        }
+        
+        .cards-btn:hover {
+            background-color: var(--dark-color);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 1.5rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            animation: fadeIn 2s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .games-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BioGames</h1>
+            <p class="subtitle">Explore o fascinante mundo da biologia através de jogos interativos e divertidos. Teste seus conhecimentos e aprenda de forma dinâmica!</p>
+        </header>
+        
+        <div class="games-container">
+            <div class="game-card">
+                <div class="game-icon">🔬</div>
+                <h2 class="game-title">Quiz de Biologia</h2>
+                <p class="game-description">Desafie seus conhecimentos com nosso quiz abrangente sobre biologia celular, genética, ecologia e muito mais!</p>
+                <a href="#" class="btn quiz-btn">Jogar Quiz</a>
+            </div>
+            
+            <div class="game-card">
+                <div class="game-icon">🧬</div>
+                <h2 class="game-title">Jogo de Cartas</h2>
+                <p class="game-description">Combine termos biológicos com suas definições neste divertido jogo de memória e aprendizado!</p>
+                <a href="#" class="btn cards-btn">Jogar Cartas</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
