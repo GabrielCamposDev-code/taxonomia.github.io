@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificação Biológica - Jogo de Reinos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --animalia: #FF6B6B;
+            --plantae: #51A851;
+            --fungi: #E6A157;
+            --protista: #5D9CEC;
+            --monera: #9D9D5C;
+            --primary: #3A7CA5;
+            --secondary: #2F6690;
+            --light: #F8F9FA;
+            --dark: #343A40;
+            --success: #28A745;
+            --danger: #DC3545;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        h1 {
+            font-family: 'Merriweather', serif;
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color:green;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        h2 {
+            font-weight: 400;
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+        
+        .game-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--animalia), var(--plantae), var(--fungi), var(--protista), var(--monera));
+        }
+        
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            background-color: rgba(58, 124, 165, 0.1);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .score-container div {
+            font-weight: 600;
+        }
+        
+        .score-container span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .species-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+        
+        .species-image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .species-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: var(--transition);
+        }
+        
+        .species-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            text-align: center;
+            margin: 10px 0;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .species-name::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 3px;
+        }
+        
+        .kingdom-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .kingdom-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            color: white;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+        
+        .kingdom-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .kingdom-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .kingdom-btn i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+        
+        #animalia {
+            background-color: var(--animalia);
+        }
+        
+        #plantae {
+            background-color: var(--plantae);
+        }
+        
+        #fungi {
+            background-color: var(--fungi);
+        }
+        
+        #protista {
+            background-color: var(--protista);
+        }
+        
+        #monera {
+            background-color: var(--monera);
+        }
+        
+        .feedback {
+            font-size: 1.2rem;
+            font-weight: 600;
+            height: 40px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            border-radius: 8px;
+            transition: var(--transition);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .correct {
+            color: var(--success);
+            background-color: rgba(40, 167, 69, 0.1);
+            border: 1px solid var(--success);
+        }
+        
+        .incorrect {
+            color: var(--danger);
+            background-color: rgba(220, 53, 69, 0.1);
+            border: 1px solid var(--danger);
+        }
+        
+        .next-btn {
+            padding: 12px 30px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+        }
+        
+        .game-over {
+            text-align: center;
+            display: none;
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .game-over h2 {
+            font-family: 'Merriweather', serif;
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .game-over p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .game-over span {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .restart-btn {
+            padding: 15px 30px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+        }
+        
+        .kingdom-info {
+            margin-top: 30px;
+            width: 100%;
+            background-color: rgba(248, 249, 250, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .kingdom-info h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .kingdom-info p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.1rem;
+            }
+            
+            .game-container {
+                padding: 20px;
+            }
+            
+            .species-name {
+                font-size: 1.5rem;
+            }
+            
+            .kingdom-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .kingdom-btn {
+                min-height: 50px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Tooltip for kingdoms */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Classificação Biológica</h1>
+        <h2>Em qual reino esta espécie se encaixa?</h2>
+    </div>
+    
+    <div class="game-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        </div>
+        
+        <div class="score-container">
+            <div>Cartas: <span id="current-card">1</span>/<span id="total-cards">12</span></div>
+            <div>Pontuação: <span id="score">0</span></div>
+        </div>
+        
+        <div class="card">
+            <div class="species-image-container">
+                <img id="species-image" class="species-image" src="" alt="Imagem da espécie">
+            </div>
+            <div id="species-name" class="species-name"></div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="kingdom-options">
+                <button id="animalia" class="kingdom-btn tooltip" onclick="checkAnswer('Animalia')">
+                    <i class="fas fa-paw"></i> Animalia
+                    <span class="tooltiptext">Organismos multicelulares, eucariontes e heterotróficos</span>
+                </button>
+                <button id="plantae" class="kingdom-btn tooltip" onclick="checkAnswer('Plantae')">
+                    <i class="fas fa-leaf"></i> Plantae
+                    <span class="tooltiptext">Organismos multicelulares, eucariontes e autotróficos</span>
+                </button>
+                <button id="fungi" class="kingdom-btn tooltip" onclick="checkAnswer('Fungi')">
+                    <i class="fas fa-spa"></i> Fungi
+                    <span class="tooltiptext">Organismos eucariontes, heterotróficos por absorção</span>
+                </button>
+                <button id="protista" class="kingdom-btn tooltip" onclick="checkAnswer('Protista')">
+                    <i class="fas fa-microscope"></i> Protista
+                    <span class="tooltiptext">Eucariontes que não se encaixam nos outros reinos</span>
+                </button>
+                <button id="monera" class="kingdom-btn tooltip" onclick="checkAnswer('Monera')">
+                    <i class="fas fa-bacterium"></i> Monera
+                    <span class="tooltiptext">Organismos procariontes (bactérias e arqueas)</span>
+                </button>
+            </div>
+            
+            <button id="next-btn" class="next-btn" onclick="nextCard()">Próximo <i class="fas fa-arrow-right"></i></button>
+            
+            <div class="kingdom-info" id="kingdom-info" style="display: none;">
+                <h3 id="kingdom-title"></h3>
+                <p id="kingdom-description"></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="game-over" id="game-over">
+        <h2>Jogo Concluído!</h2>
+        <p>Sua pontuação final: <span id="final-score">0</span>/<span id="final-total">12</span></p>
+        <button class="restart-btn" onclick="restartGame()">Jogar Novamente <i class="fas fa-redo"></i></button>
+    </div>
+    
+    <script>
+        // Banco de dados de espécies com seus reinos
+        const speciesDatabase = [
+            {
+                name: "Cogumelo",
+                image: "https://cdn.pixabay.com/photo/2023/10/13/17/10/mushroom-8313142_1280.jpg",
+                kingdom: "Fungi",
+                info: "Os fungos são um reino de organismos eucariontes que inclui leveduras, bolores e cogumelos. Eles são heterotróficos, obtendo nutrientes através da absorção de matéria orgânica decomposta."
+            },
+            {
+                name: "Pano branco (micose)",
+                image: "https://medicosobdemanda.com/wp-content/uploads/2024/04/tipos-de-pano-branco-na-pele-1024x768.jpg",
+                kingdom: "Fungi",
+                info: "Micoses são infecções causadas por fungos que se alimentam da queratina da pele, cabelos e unhas. O 'pano branco' é causado por fungos do gênero Malassezia."
+            },
+            {
+                name: "Mofo",
+                image: "https://cdn.pixabay.com/photo/2022/11/06/14/39/slime-mold-7574175_1280.jpg",
+                kingdom: "Fungi",
+                info: "Mofos são fungos filamentosos que crescem em matéria orgânica úmida. Eles desempenham um papel crucial na decomposição e reciclagem de nutrientes nos ecossistemas."
+            },
+            {
+                name: "Ameba",
+                image: "https://conteudo.imguol.com.br/c/entretenimento/44/2019/01/16/ameba-pode-ser-encontrada-em-lagos-e-zonas-umidas-1547654110459_v2_900x506.jpg",
+                kingdom: "Protista",
+                info: "Amebas são protistas unicelulares que se movem usando pseudópodes. Muitas são de vida livre em água doce, mas algumas espécies podem ser parasitas humanas."
+            },
+            {
+                name: "Bactéria (E. coli)",
+                image: "https://cdn.pixabay.com/photo/2013/06/08/08/09/koli-bacteria-123081_1280.jpg",
+                kingdom: "Monera",
+                info: "Escherichia coli é uma bactéria comum no intestino de animais de sangue quente. A maioria das cepas é inofensiva, mas algumas podem causar intoxicação alimentar."
+            },
+            {
+                name: "Bactéria",
+                image: "https://cdn.pixabay.com/photo/2018/09/06/18/49/bacteria-3658992_1280.jpg",
+                kingdom: "Monera",
+                info: "As bactérias são organismos procariontes unicelulares que podem viver em diversos ambientes. São essenciais para muitos processos ecológicos como a decomposição e a fixação de nitrogênio."
+            },
+            {
+                name: "Leão",
+                image: "https://cdn.pixabay.com/photo/2023/06/29/10/33/lion-8096155_1280.png",
+                kingdom: "Animalia",
+                info: "O leão (Panthera leo) é um mamífero carnívoro da família Felidae. É um dos grandes predadores da savana africana e vive em grupos sociais chamados de 'coalizões'."
+            },
+            {
+                name: "Humano",
+                image: "https://cdn.pixabay.com/photo/2023/04/21/15/42/portrait-7942151_1280.jpg",
+                kingdom: "Animalia",
+                info: "Os humanos (Homo sapiens) são mamíferos primatas caracterizados pelo cérebro altamente desenvolvido, linguagem complexa e capacidade de criar ferramentas e cultura."
+            },
+            {
+                name: "Cachorro",
+                image: "https://cdn.pixabay.com/photo/2016/05/09/10/42/weimaraner-1381186_1280.jpg",
+                kingdom: "Animalia",
+                info: "O cão doméstico (Canis lupus familiaris) é uma subespécie do lobo, domesticada há milhares de anos. Possui grande variedade de raças com diferentes características físicas e comportamentais."
+            },
+            {
+                name: "Paramécio",
+                image: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Paramecium.jpg",
+                kingdom: "Protista",
+                info: "Paramécios são protistas ciliados com formato característico de sola de sapato. Possuem dois núcleos (macro e micronúcleo) e se movem usando cílios."
+            },
+            {
+                name: "Planta (Hera)",
+                image: "https://cdn.pixabay.com/photo/2019/04/24/12/35/ivy-4152057_1280.jpg",
+                kingdom: "Plantae",
+                info: "A hera (Hedera helix) é uma planta trepadeira perene que usa raízes adventícias para se fixar em superfícies. Produz folhas verdes escuras e flores pequenas amareladas."
+            },
+            {
+                name: "Algas marinhas",
+                image: "https://cdn.pixabay.com/photo/2016/01/08/21/00/seaweed-1129226_1280.jpg",
+                kingdom: "Protista",
+                info: "Algas marinhas são protistas fotossintetizantes que vivem em ambientes aquáticos. Podem ser unicelulares (como as diatomáceas) ou multicelulares (como as algas pardas)."
+            }
+        ];
+        
+        // Informações sobre os reinos
+        const kingdomsInfo = {
+            "Animalia": {
+                title: "Reino Animalia",
+                description: "O reino Animalia inclui organismos multicelulares, eucariontes e heterotróficos. Os animais obtêm nutrientes ingerindo matéria orgânica e possuem tecidos especializados. A maioria possui capacidade de locomoção em algum estágio da vida. Exemplos: mamíferos, aves, peixes, insetos, moluscos."
+            },
+            "Plantae": {
+                title: "Reino Plantae",
+                description: "O reino Plantae é composto por organismos multicelulares, eucariontes e autotróficos fotossintetizantes. As plantas possuem parede celular de celulose e cloroplastos. São a base da maioria das cadeias alimentares terrestres. Exemplos: árvores, gramíneas, samambaias, musgos."
+            },
+            "Fungi": {
+                title: "Reino Fungi",
+                description: "Os fungos são eucariontes que obtêm nutrientes por absorção de matéria orgânica. Possuem parede celular de quitina. Desempenham papéis essenciais como decompositores e em associações simbióticas. Exemplos: cogumelos, leveduras, bolores, micorrizas."
+            },
+            "Protista": {
+                title: "Reino Protista",
+                description: "O reino Protista inclui eucariontes que não são animais, plantas ou fungos. É um grupo diverso que inclui organismos unicelulares e alguns multicelulares simples. Muitos são aquáticos. Exemplos: amebas, paramécios, algas, plasmódios."
+            },
+            "Monera": {
+                title: "Reino Monera",
+                description: "O reino Monera inclui organismos procariontes (sem núcleo celular definido). São unicelulares e incluem bactérias e arqueas. Possuem grande diversidade metabólica e são encontrados em praticamente todos os ambientes. Exemplos: E. coli, cianobactérias, Staphylococcus."
+            }
+        };
+        
+        // Variáveis do jogo
+        let currentCardIndex = 0;
+        let score = 0;
+        let gameCards = [];
+        
+        // Elementos do DOM
+        const speciesImage = document.getElementById('species-image');
+        const speciesName = document.getElementById('species-name');
+        const currentCardDisplay = document.getElementById('current-card');
+        const totalCardsDisplay = document.getElementById('total-cards');
+        const scoreDisplay = document.getElementById('score');
+        const feedbackDisplay = document.getElementById('feedback');
+        const nextBtn = document.getElementById('next-btn');
+        const gameOverDisplay = document.getElementById('game-over');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const finalTotalDisplay = document.getElementById('final-total');
+        const progressBar = document.getElementById('progress-bar');
+        const kingdomInfo = document.getElementById('kingdom-info');
+        const kingdomTitle = document.getElementById('kingdom-title');
+        const kingdomDescription = document.getElementById('kingdom-description');
+        
+        // Inicializar o jogo
+        function initGame() {
+            // Embaralhar as cartas
+            gameCards = [...speciesDatabase].sort(() => Math.random() - 0.5);
+            
+            currentCardIndex = 0;
+            score = 0;
+            scoreDisplay.textContent = score;
+            totalCardsDisplay.textContent = gameCards.length;
+            
+            // Esconder tela de game over
+            gameOverDisplay.style.display = 'none';
+            kingdomInfo.style.display = 'none';
+            
+            // Mostrar primeira carta
+            showCard();
+        }
+        
+        // Mostrar a carta atual
+        function showCard() {
+            if (currentCardIndex < gameCards.length) {
+                const currentCard = gameCards[currentCardIndex];
+                speciesImage.src = currentCard.image;
+                speciesName.textContent = currentCard.name;
+                currentCardDisplay.textContent = currentCardIndex + 1;
+                
+                // Atualizar barra de progresso
+                const progress = ((currentCardIndex) / gameCards.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                // Resetar feedback e botões
+                feedbackDisplay.textContent = '';
+                feedbackDisplay.className = 'feedback';
+                nextBtn.style.display = 'none';
+                kingdomInfo.style.display = 'none';
+                
+                // Reativar todos os botões
+                document.querySelectorAll('.kingdom-btn').forEach(btn => {
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    btn.style.transform = 'scale(1)';
+                });
+            } else {
+                endGame();
+            }
+        }
+        
+        // Verificar a resposta do jogador
+        function checkAnswer(selectedKingdom) {
+            const currentCard = gameCards[currentCardIndex];
+            
+            // Desativar todos os botões
+            document.querySelectorAll('.kingdom-btn').forEach(btn => {
+                btn.disabled = true;
+                if (btn.id !== selectedKingdom.toLowerCase()) {
+                    btn.style.opacity = '0.6';
+                    btn.style.transform = 'scale(0.95)';
+                }
+            });
+            
+            // Verificar se a resposta está correta
+            if (selectedKingdom === currentCard.kingdom) {
+                feedbackDisplay.textContent = '✓ Correto!';
+                feedbackDisplay.className = 'feedback correct';
+                score++;
+                scoreDisplay.textContent = score;
+            } else {
+                feedbackDisplay.textContent = `✗ Incorreto! O reino correto é ${currentCard.kingdom}.`;
+                feedbackDisplay.className = 'feedback incorrect';
+                
+                // Destacar o botão correto
+                const correctBtn = document.getElementById(currentCard.kingdom.toLowerCase());
+                correctBtn.style.transform = 'scale(1.05)';
+                correctBtn.style.boxShadow = '0 0 15px rgba(0,0,0,0.2)';
+                correctBtn.style.animation = 'pulse 0.5s 2';
+            }
+            
+            // Mostrar informações sobre o reino
+            kingdomTitle.textContent = kingdomsInfo[currentCard.kingdom].title;
+            kingdomDescription.textContent = kingdomsInfo[currentCard.kingdom].description + " " + currentCard.info;
+            kingdomInfo.style.display = 'block';
+            
+            // Mostrar botão para próxima carta
+            nextBtn.style.display = 'block';
+        }
+        
+        // Avançar para a próxima carta
+        function nextCard() {
+            currentCardIndex++;
+            showCard();
+        }
+        
+        // Finalizar o jogo
+        function endGame() {
+            document.querySelector('.game-container').style.display = 'none';
+            gameOverDisplay.style.display = 'block';
+            finalScoreDisplay.textContent = score;
+            finalTotalDisplay.textContent = gameCards.length;
+            
+            // Atualizar barra de progresso para 100%
+            progressBar.style.width = '100%';
+        }
+        
+        // Reiniciar o jogo
+        function restartGame() {
+            document.querySelector('.game-container').style.display = 'block';
+            initGame();
+        }
+        
+        // Iniciar o jogo quando a página carregar
+        window.onload = initGame;
+    </script>
+</body>
+</html>
